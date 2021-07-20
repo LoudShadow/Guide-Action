@@ -7,7 +7,7 @@ jobs:
     steps:
     - name: Hello world action step
       id: hello
-      uses: LoudShadow/Guide-Action
+      uses: LoudShadow/Guide-Action@v1
       with:
         who-to-greet: 'Joseph'
         name: 'name'
