@@ -7,9 +7,12 @@ jobs:
     steps:
     - name: Hello world action step
       id: hello
-      uses: kubowania/my-javascript-action@v1
+      uses: LoudShadow/Guide-Action
       with:
-        who-to-greet: 'Ania'
+        who-to-greet: 'Joseph'
+        name: 'name'
+        json: 'json'
+        dir: 'Joseph'
     # Use the output from the `hello` step
     - name: Get the output time
       run: echo "The time was ${{ steps.hello.outputs.time }}"
