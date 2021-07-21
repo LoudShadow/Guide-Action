@@ -63,7 +63,6 @@ function getHeadingSize(line){
 }
 
 async function checkFile(file){
-  var warned = false;
   fs.readFile(file,'utf8',(err,data)=>{
     if (err){
       console.error(err);
@@ -80,6 +79,7 @@ async function checkFile(file){
     lineCount=0;
     headingValue=10
     var lines = data.split('\n');
+    var warned = false;
     for (const line of lines){
       lineCount+=1;
       var currentHeadingSize = getHeadingSize(line);
@@ -95,10 +95,10 @@ async function checkFile(file){
         headingValue=currentHeadingSize;
       }
     }
+    if (!warned){
+      core.setOutput(file +"Checks passed");
+    }
   });
-  if (!warned){
-    core.setOutput(file +"Checks passed");
-  }
 }
 
 
@@ -123,7 +123,6 @@ try {
       }
       for(const file of files){
         if (file.endsWith(".md")){
-          console.log(file);
           checkFile(file);
         } 
       }
