@@ -112,6 +112,7 @@ try {
     //console.log('Environment vars:'+process.env.GITHUB_WORKSPACE);
 
     readDirs('process.env.GITHUB_WORKSPACE',[path.resolve(process.env.GITHUB_WORKSPACE,'node_modules')],function(err,files){
+      console.log(files);
       for(const file of files){
         if (file.endsWith(".md")){
           console.log(file);
