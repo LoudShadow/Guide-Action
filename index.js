@@ -2,9 +2,6 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const fs = require('fs');
 const path = require("path");
-// const fs = require('fs');
-// const path = require("path");
-
 
 
 // const fileName = core.getInput('name');
@@ -36,6 +33,7 @@ try {
         }
         console.log("Done V1.2");
     });
+    console.log(files);
     
     //console.log(`The event payload: ${payload}`);
   } 
