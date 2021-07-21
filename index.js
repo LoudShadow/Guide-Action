@@ -28,12 +28,12 @@ try {
     console.log('Environment vars:'+process.env.GITHUB_WORKSPACE);
 
 
-    const files = await fs.readdir(process.env.GITHUB_WORKSPACE);
-
-    for (const file in files){
-        console.log(file);
-    }
-    console.log("Done V1.2")
+    const files = fs.readdir(process.env.GITHUB_WORKSPACE , function (err,files){
+        for (const file in files){
+            console.log("file:"+file);
+        }
+    });
+    console.log("Done V1.2");
     //console.log(`The event payload: ${payload}`);
   } 
 
