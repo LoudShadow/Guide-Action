@@ -26,11 +26,14 @@ try {
     const payload = JSON.stringify(github.context.payload, undefined, 2)
     
     console.log('Environment vars:'+process.env.GITHUB_WORKSPACE);
-    fs.readdir(process.env.GITHUB_WORKSPACE, (err, files) => {
-        files.forEach(file => {
-          console.log(file);
-        });
-    });
+
+
+    const files = await fs.readdir(process.env.GITHUB_WORKSPACE);
+
+    for (const file in files){
+        console.log(file);
+    }
+    console.log("Done V1.2")
     //console.log(`The event payload: ${payload}`);
   } 
 
