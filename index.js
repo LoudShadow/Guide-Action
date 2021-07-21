@@ -25,7 +25,7 @@ try {
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2)
     
-
+    console.log(process.env.GITHUB_WORKSPACE);
     fs.readdir(process.env.GITHUB_WORKSPACE, (err, files) => {
         files.forEach(file => {
           console.log(file);
