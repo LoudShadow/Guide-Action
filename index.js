@@ -96,7 +96,7 @@ async function checkFile(file){
       }
     }
     if (!warned){
-      core.setOutput(file +"Checks passed");
+      console.log(file +"Checks passed");
     }
   });
 }
