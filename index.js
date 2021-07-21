@@ -17,7 +17,8 @@ var readDirs = function(dir, done){
       return err;
     }
     for (const file in files){
-      var filePath=path.resolve(dir,file)
+      var filePath=path.resolve(dir,file);
+      console.log(filePath);
       results.push(filePath);
       fs.stat(filePath, function (err,stat){
         if (err){
