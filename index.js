@@ -1,6 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const { count } = require('console');
+const { count, Console } = require('console');
 const fs = require('fs');
 const path = require("path");
 const fm = require('front-matter')
@@ -111,7 +111,10 @@ try {
     
     //console.log('Environment vars:'+process.env.GITHUB_WORKSPACE);
 
-    readDirs('process.env.GITHUB_WORKSPACE',[path.resolve(process.env.GITHUB_WORKSPACE,'node_modules')],function(err,files){
+    readDirs(process.env.GITHUB_WORKSPACE,[path.resolve(process.env.GITHUB_WORKSPACE,'node_modules')],function(err,files){
+      if (err){
+        core.error(err);
+      }
       console.log(files);
       for(const file of files){
         if (file.endsWith(".md")){
