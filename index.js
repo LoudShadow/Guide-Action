@@ -10,9 +10,38 @@ const path = require("path");
 // const fullPath = path.join(process.env.GITHUB_WORKSPACE, dir || "", fileName);
 
 
+var readDirs = function(dir, done){
+  var results=[];
+  fs.readdir(dir, function(err,files){
+    if (err){
+      return err;
+    }
+    for (const file in files){
+      var filePath=path.resolve(dir,file)
+      results.push(filePath);
+      fs.stat(filePath, function (err,stat){
+        if (err){
+          return err;
+        }
+        if (stat.isDirectory()){
+          subResults=readDirs(filePath);
+          if (Array.isArray(subResults)){
+            results.concat(subResults);
+          }else{
+            return results;
+          }
+        }
+      });
+    }
+  });
+  return results;
+} 
+
+
+
+
+
 async function run(){
-
-
 try {
     // `who-to-greet` input defined in action metadata file
     const nameToGreet = core.getInput('who-to-greet');
@@ -24,15 +53,7 @@ try {
     
     console.log('Environment vars:'+process.env.GITHUB_WORKSPACE);
 
-
-    fs.readdir(path.join(process.env.GITHUB_WORKSPACE) , function (err,files){
-        console.log(files);
-        console.log(err);
-        for (const file in files){
-            console.log("file:"+file);
-        }
-        console.log("Done V1.2");
-    });
+    console.log(readDirs(process.env.GITHUB_WORKSPACE))
     
     //console.log(`The event payload: ${payload}`);
   } 
@@ -43,3 +64,4 @@ catch (error) {
 }
 
 run();
+
