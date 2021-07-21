@@ -30,6 +30,9 @@ try {
 
     const files = fs.readdir(process.env.GITHUB_WORKSPACE , function (err,files){
         console.log(files);
+        if (err){
+            console.log(err);
+        }
         for (const file in files){
             console.log("file:"+file);
         }
