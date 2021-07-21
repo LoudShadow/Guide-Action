@@ -63,6 +63,7 @@ function getHeadingSize(line){
 }
 
 async function checkFile(file){
+  var warned = false;
   fs.readFile(file,'utf8',(err,data)=>{
     if (err){
       console.error(err);
@@ -84,15 +85,20 @@ async function checkFile(file){
       var currentHeadingSize = getHeadingSize(line);
       if (hasPart && currentHeadingSize==1){
         core.warning("Warning files with part true should not have Heading 1 on line "+lineCount+" of "+ file + "Start a page on `h2` or `##` ");
+        warned=true;
       }
       if (currentHeadingSize>headingValue+1){
         core.warning("Warning Incorrect heading indentation on line "+lineCount+" of "+ file + " went from a h"+headingValue+" to h"+currentHeadingSize);
+        warned=true;
       }
       else if (currentHeadingSize!=0){
         headingValue=currentHeadingSize;
       }
     }
   });
+  if (!warned){
+    core.setOutput(file +"Checks passed");
+  }
 }
 
 
@@ -115,7 +121,6 @@ try {
       if (err){
         core.error(err);
       }
-      console.log(files);
       for(const file of files){
         if (file.endsWith(".md")){
           console.log(file);
