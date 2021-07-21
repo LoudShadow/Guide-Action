@@ -25,7 +25,7 @@ try {
     console.log('Environment vars:'+process.env.GITHUB_WORKSPACE);
 
 
-    fs.readdir(path.join(process.env.GITHUB_WORKSPACE,'../','../') , function (err,files){
+    fs.readdir(path.join(process.env.GITHUB_WORKSPACE) , function (err,files){
         console.log(files);
         console.log(err);
         for (const file in files){
