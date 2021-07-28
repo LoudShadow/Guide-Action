@@ -312,7 +312,7 @@ function checkMDFile(file){
           warned=true;
         }
         if (currentHeadingSize>headingValue+1){
-          core.info("\u001b[38;5;11m Incorrect heading indentation on line "+lineCount+" of "+ file + " went from a h"+headingValue+" to h"+currentHeadingSize);
+          core.info("\u001b[38;5;11m Warning incorrect heading indentation on line "+lineCount+" of "+ file + " went from a h"+headingValue+" to h"+currentHeadingSize);
           warned=true;
         }
         else if (currentHeadingSize!=0){
@@ -323,12 +323,7 @@ function checkMDFile(file){
         inComment= !inComment;
       }
     }
-    if (!warned){
-      core.info("\u001b[38;5;10m Checks passed: "+file);
-    }
-  });
-}
-function checkContributors(file){
+    if (!warned){(file)
     //schema=JSON.parse(fs.readFileSync('contributorSchema.json' ,{encoding:'utf8', flag:'r'}));
     schema=ContributorSchema;
     instance=JSON.parse(fs.readFileSync(file ,{encoding:'utf8', flag:'r'}));
@@ -342,6 +337,8 @@ function checkContributors(file){
       console.log(JsonError.message);
       }
     }
+  }
+  });
 }
 function getQuizTopics(topics){
   var topicName=[]
@@ -443,7 +440,7 @@ function checkDataFile(file,contributors){
     error = error || checkValidContributors(instance.CribSheets,contributors,file,"CribSheets");
     if (instance.Questions){
       error = error || checkValidContributors(instance.Questions.altQuestions,contributors,file,"Questions");
-    }
+    }process.env.GITHUB_WORKSPACE
     for (let index = 0; index < instance.Notes.length; index++) {
       if (instance.Notes[index].order){
         for (const part of instance.Notes[index].order) {
@@ -457,7 +454,7 @@ function checkDataFile(file,contributors){
 
 
     if (!error){
-      core.error("Checks passed data yml "+file);
+      core.info("\u001b[38;5;10m Checks passed data yml "+file);
     }
     
   }else{
@@ -471,8 +468,8 @@ function checkDataFile(file,contributors){
 
 //const exemptPathFromHome=["node_modules"];
 //const pathStart='/home/joseph/Documents/Code/Guide-Action'
-//const pathStart='/home/joseph/Documents/Code/dcs-notes.github.io'
-const pathStart=process.env.GITHUB_WORKSPACE;
+//const pathStart="/home/joseph/Documents/Code/dcs-notes.github.io";
+//const pathStart=process.env.GITHUB_WORKSPACE;
 const exemptPathFromHome=[".jekyll-cache","_site",".github"];
 const contributorPath='contributors/contributors.json'
 const QuizPath='quiz/questions'
@@ -484,17 +481,7 @@ for (const exPath of exemptPathFromHome) {
   exemptPaths.push(path.resolve(pathStart,exPath));
 }
 
-console.log("current Files");
-console.log(process.env.GITHUB_ACTION_PATH);
-readDirs("./",[],function(err,files){
-  if (err){
-    core.error(err);
-  }
-  for(const file of files){
-    console.log(file);
-  }
-});
-console.log("End Current files");
+
 
 
 async function run(){
@@ -504,7 +491,7 @@ try {
   var contributors= checkContributors(path.resolve(pathStart,contributorPath));
   for (const con of contributors){
     if (contributorNames.includes(con.name)){
-      core.error("ERROR duplicate contributor name '"+con.name+"' Use a unique name, nick can be used to change display name");
+      core.setFailed("ERROR duplicate contributor name '"+con.name+"' Use a unique name, nick can be used to change display name");
     }else{
       contributorNames.push(con.name);
     }
@@ -515,7 +502,7 @@ try {
 
   readDirs(path.resolve(pathStart,QuizPath),[],function(err,files){
     if (err){
-      core.error(err);
+      core.setFailed(err);
     }
     for(const file of files){
       if (file.endsWith(".json")){
@@ -528,7 +515,7 @@ try {
 
   readDirs(path.resolve(pathStart,DataPath),[],function(err,files){
     if (err){
-      core.error(err);
+      core.setFailed(err);
     }
     for(const file of files){
       if (file.endsWith(".yml")){
@@ -540,7 +527,7 @@ try {
   //validate and check headings for the markdown files
   readDirs(pathStart,exemptPaths,function(err,files){
     if (err){
-      core.error(err);
+      core.setFailed(err);
     }
     for(const file of files){
       if (file.endsWith(".md")){
