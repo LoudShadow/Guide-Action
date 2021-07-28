@@ -278,7 +278,7 @@ for (const exPath of exemptPathFromHome) {
 
 console.log("current Files");
 console.log(process.env.GITHUB_ACTION_PATH);
-fs.readdir(process.env.GITHUB_ACTION_PATH,[],function(err,files){
+readDirs("./",[],function(err,files){
   if (err){
     core.error(err);
   }
