@@ -8,6 +8,7 @@ const validate = require('jsonschema').validate;
 var Validator = require('jsonschema').Validator;
 
 
+
 function readDirs(dir,exempt,result){ 
   var results=[];
   fs.readdir(dir, function(err,files){
@@ -273,6 +274,16 @@ var exemptPaths=[];
 for (const exPath of exemptPathFromHome) {
   exemptPaths.push(path.resolve(pathStart,exPath));
 }
+
+
+readDirs("./",[],function(err,files){
+  if (err){
+    core.error(err);
+  }
+  for(const file of files){
+    console.log(file);
+  }
+});
 
 
 async function run(){
