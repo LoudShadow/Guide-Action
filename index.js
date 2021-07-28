@@ -457,7 +457,7 @@ function checkDataFile(file,contributors){
 
 
     if (!error){
-      console.log("\u001b[38;5;10m Checks passed data yml "+file);
+      core.info("\u001b[38;5;10m Checks passed data yml "+file);
     }
     
   }else{
@@ -515,31 +515,27 @@ try {
   });
 
   //validate and check data files
-  const result1 = await core.group('Check Data Files', async () => {
-    readDirs(path.resolve(pathStart,DataPath),[],function(err,files){
-      if (err){
-        core.setFailed(err);
-      }
-      for(const file of files){
-        if (file.endsWith(".yml")){
-          checkDataFile(file,contributorNames);
-        } 
-      }
-    });
+  readDirs(path.resolve(pathStart,DataPath),[],function(err,files){
+    if (err){
+      core.setFailed(err);
+    }
+    for(const file of files){
+      if (file.endsWith(".yml")){
+        checkDataFile(file,contributorNames);
+      } 
+    }
   });
 
   //validate and check headings for the markdown files
-  const result2 = await core.group('Check Markdown Formatting', async () => {
-    readDirs(pathStart,exemptPaths,function(err,files){
-      if (err){
-        core.setFailed(err);
-      }
-      for(const file of files){
-        if (file.endsWith(".md")){
-          checkMDFile(file);
-        } 
-      }
-    });
+  readDirs(pathStart,exemptPaths,function(err,files){
+    if (err){
+      core.setFailed(err);
+    }
+    for(const file of files){
+      if (file.endsWith(".md")){
+        checkMDFile(file);
+      } 
+    }
   });
 }
 
