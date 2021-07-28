@@ -275,8 +275,8 @@ for (const exPath of exemptPathFromHome) {
   exemptPaths.push(path.resolve(pathStart,exPath));
 }
 
-
-readDirs("./",[],function(err,files){
+console.log("current Files");
+fs.readdir("./",[],function(err,files){
   if (err){
     core.error(err);
   }
@@ -284,6 +284,7 @@ readDirs("./",[],function(err,files){
     console.log(file);
   }
 });
+console.log("End Current files");
 
 
 async function run(){
