@@ -469,7 +469,7 @@ function checkDataFile(file,contributors){
 //const exemptPathFromHome=["node_modules"];
 //const pathStart='/home/joseph/Documents/Code/Guide-Action'
 //const pathStart="/home/joseph/Documents/Code/dcs-notes.github.io";
-//const pathStart=process.env.GITHUB_WORKSPACE;
+const pathStart=process.env.GITHUB_WORKSPACE;
 const exemptPathFromHome=[".jekyll-cache","_site",".github"];
 const contributorPath='contributors/contributors.json'
 const QuizPath='quiz/questions'
