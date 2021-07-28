@@ -308,11 +308,11 @@ function checkMDFile(file){
       if (!inComment){
         var currentHeadingSize = getHeadingSize(line);
         if (hasPart && currentHeadingSize==1){
-          core.info("\u001b[38;5;11m Warning files with part:true should not have Heading 1 on line "+lineCount+" of "+ file + " Start a page on `h2` or `##` ");
+          core.warning("\u001b[38;5;11m Warning files with part:true should not have Heading 1 on line "+lineCount+" of "+ file + " Start a page on `h2` or `##` ");
           warned=true;
         }
         if (currentHeadingSize>headingValue+1){
-          core.info("\u001b[38;5;11m Warning incorrect heading indentation on line "+lineCount+" of "+ file + " went from a h"+headingValue+" to h"+currentHeadingSize);
+          core.warning("\u001b[38;5;11m Warning incorrect heading indentation on line "+lineCount+" of "+ file + " went from a h"+headingValue+" to h"+currentHeadingSize);
           warned=true;
         }
         else if (currentHeadingSize!=0){
