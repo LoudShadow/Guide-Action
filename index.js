@@ -8,6 +8,213 @@ const validate = require('jsonschema').validate;
 var Validator = require('jsonschema').Validator;
 
 
+var ContributorSchema={"type": "array",
+"items":{
+  "type":"object",
+  "properties":{
+      "name":{"type":"string"},
+      "image":{"type":"string"},
+      "github":{"type":"string"},
+      "discord":{"type":"string"},
+      "nick":{"type":"string"}
+    },
+    "required":["name","image"],
+    "additionalProperties":{
+      "type":["string",
+        {
+          "type":"object",
+          "properties":{
+            "value":{"type":"string"},
+            "link":{"type":"string"}
+          } 
+        }
+      ]
+    }
+}  
+}
+
+var dataSchema={
+  "type":"object",
+  "properties":{
+      "code":{"type":"string"},
+      "description":{"type":"string"},
+      "website":{"type":"string"},
+      "cats":{"type":"integer"},
+      "optional":{"type":"string"},
+      "examStructure":{
+          "type":"array",
+          "items":{
+              "type":"object",
+              "properties":{
+                  "name":{"type":"string"},
+                  "percent":{"type":"integer"},
+                  "date":{"type":["string","date"]},
+                  "structure":{"type":"string"}
+              },
+              "required":["name","percent","date","structure"]
+          }
+      },
+      "Notes":{
+          "type":"array",
+          "items":{
+              "type":"object",
+              "properties":{
+                  "name":{"type":"string"},
+                  "description":{"type":"string"},
+                  "order":{
+                      "type":"array",
+                      "items":{"type":"string"}
+                  },
+                  "link":{"type":"string"},
+                  "authors":{
+                      "type":"array",
+                      "items":{"type":"string"}
+                  },
+                  "contributors":{
+                      "type":"array",
+                      "items":{"type":"string"}
+                  }
+              },
+              "required":["name","description"]
+          }
+      },
+      "CribSheets":{
+          "type":"array",
+          "items":{
+              "type":"object",
+              "properties":{
+                  "name":{"type":"string"},
+                  "description":{"type":"string"},
+                  "link":{"type":"string"},
+                  "authors":{
+                      "type":"array",
+                      "items":{"type":"string"}
+                  },
+                  "contributors":{
+                      "type":"array",
+                      "items":{"type":"string"}
+                  }
+              },
+              "required":["name","description"]
+          }
+      },
+      "Questions":{
+          "type":"object",
+          "properties":{
+              "QUIZAvailable":{"type":"boolean"},
+              "altQuestions":{
+                  "type":"array",
+                  "items":{
+                      "type":"object",
+                      "properties":{
+                          "name":{"type":"string"},
+                          "description":{"type":"string"},
+                          "link":{"type":"string"},
+                          "authors":{
+                              "type":"array",
+                              "items":{"type":"string"}
+                          },
+                          "contributors":{
+                              "type":"array",
+                              "items":{"type":"string"}
+                          }
+                      },
+                      "required":["name","description"]
+                  }
+              }
+          }
+      }
+  },
+  "required":["code","description","website","cats","optional"]
+}
+
+var questionSchema={
+  "id":"/QuestionStructure",
+  "type":"object",
+  "properties":{
+      "question":{"type":["string",
+               {"type":"array",
+                   "items":{"type":"string"}
+               }
+           ]},
+      "questionImg":{"type":"string"},
+      "answerImg":{"type":"string"},
+      "answer":{"type":["string",
+               {"type":"array",
+               "items":{"type":"string"}
+               }
+           ]},
+      "marks":{"type":"integer"},
+      "topics":{
+          "type":"array",
+          "items":{"type":"string"}
+      },
+      "author":{
+       "type":"array",
+       "items":{"type":"string"}
+       },
+       "contributors":{
+           "type":"array",
+           "items":{"type":"string"}
+       }
+  }, 
+  "required":["question","answer","marks","topics"]
+}
+
+var quizSchema={
+  "type":"object",
+  "properties":{
+      "title":{"type":"string"},
+      "name":{"type":"string"},
+      "structure":{
+          "type":"array",
+          "items":{"$ref":"/CourseStructure"}
+      },
+      "extSites":{
+          "type":"array",
+          "items":{
+              "type":"object",
+              "properties":{
+                  "name":{"type":"string"},
+                  "description":{"type":"string"},
+                  "link":{"type":"string"},
+                  "answerType":{
+                      "type":"string",
+                      "pattern":"[NCW][NCW]?[NCW]?"
+                  },
+                  "topics":{
+                      "type":"array",
+                      "items":{"type":"string"}
+                  }
+              },
+              "required":["name","description","link","answerType","topics"]
+          }
+      },
+      "recall":{
+          "type":"array",
+          "items":{"$ref":"/QuestionStructure"}
+      },
+      "understanding":{
+          "type":"array",
+          "items":{"$ref":"/QuestionStructure"}
+      }
+  },
+  "required":["title","name","structure"]
+}
+
+var structureSchema={
+  "id":"/CourseStructure",
+  "type":"Object",
+  "properties":{
+      "name":{"type":"string"},
+      "subTopics":{
+          "type":"array",
+          "items":{"$ref":"/CourseStructure"}
+      }
+  },
+  "required":["name"]
+}
+
 
 function readDirs(dir,exempt,result){ 
   var results=[];
@@ -122,7 +329,8 @@ function checkMDFile(file){
   });
 }
 function checkContributors(file){
-    schema=JSON.parse(fs.readFileSync('contributorSchema.json' ,{encoding:'utf8', flag:'r'}));
+    //schema=JSON.parse(fs.readFileSync('contributorSchema.json' ,{encoding:'utf8', flag:'r'}));
+    schema=ContributorSchema;
     instance=JSON.parse(fs.readFileSync(file ,{encoding:'utf8', flag:'r'}));
     var validation=validate(instance,schema);
     if (validation.valid){
@@ -171,9 +379,9 @@ function checkValidContributors(checking,contributors,file,description){
 }
 
 function checkQuizFile(file,contributors){
-  quizSchema=JSON.parse(fs.readFileSync('quizSchema.json' ,{encoding:'utf8', flag:'r'}));
-  questionSchema=JSON.parse(fs.readFileSync('questionSchema.json' ,{encoding:'utf8', flag:'r'}));
-  structureSchema=JSON.parse(fs.readFileSync('structureSchema.json' ,{encoding:'utf8', flag:'r'}));
+  //quizSchema=JSON.parse(fs.readFileSync('quizSchema.json' ,{encoding:'utf8', flag:'r'}));
+  //questionSchema=JSON.parse(fs.readFileSync('questionSchema.json' ,{encoding:'utf8', flag:'r'}));
+  //structureSchema=JSON.parse(fs.readFileSync('structureSchema.json' ,{encoding:'utf8', flag:'r'}));
   instance=JSON.parse(fs.readFileSync(file ,{encoding:'utf8', flag:'r'}));
   var v = new Validator();
   v.addSchema(questionSchema, '/QuestionStructure');
@@ -225,7 +433,7 @@ function checkQuizFile(file,contributors){
   }
 }
 function checkDataFile(file,contributors){
-  var dataSchema=JSON.parse(fs.readFileSync('dataSchema.json' ,{encoding:'utf8', flag:'r'}));
+  //var dataSchema=JSON.parse(fs.readFileSync('dataSchema.json' ,{encoding:'utf8', flag:'r'}));
   var instance=yaml.load(fs.readFileSync(file ,{encoding:'utf8', flag:'r'}));
   var v = new Validator();
   var validation=v.validate(instance, dataSchema);
