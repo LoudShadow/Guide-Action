@@ -515,7 +515,7 @@ try {
   });
 
   //validate and check data files
-  const result = await core.group('Check Data Files', async () => {
+  const result1 = await core.group('Check Data Files', async () => {
     readDirs(path.resolve(pathStart,DataPath),[],function(err,files){
       if (err){
         core.setFailed(err);
@@ -529,7 +529,7 @@ try {
   });
 
   //validate and check headings for the markdown files
-  const result = await core.group('Check Markdown Formatting', async () => {
+  const result2 = await core.group('Check Markdown Formatting', async () => {
     readDirs(pathStart,exemptPaths,function(err,files){
       if (err){
         core.setFailed(err);
