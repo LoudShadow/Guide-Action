@@ -457,7 +457,7 @@ function checkDataFile(file,contributors){
 
 
     if (!error){
-      core.info("\u001b[38;5;10m Checks passed data yml "+file);
+      console.log("\u001b[38;5;10m Checks passed data yml "+file);
     }
     
   }else{
