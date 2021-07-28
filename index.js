@@ -515,30 +515,33 @@ try {
   });
 
   //validate and check data files
-
-  readDirs(path.resolve(pathStart,DataPath),[],function(err,files){
-    if (err){
-      core.setFailed(err);
-    }
-    for(const file of files){
-      if (file.endsWith(".yml")){
-        checkDataFile(file,contributorNames);
-      } 
-    }
+  const result = await core.group('Check Data Files', async () => {
+    readDirs(path.resolve(pathStart,DataPath),[],function(err,files){
+      if (err){
+        core.setFailed(err);
+      }
+      for(const file of files){
+        if (file.endsWith(".yml")){
+          checkDataFile(file,contributorNames);
+        } 
+      }
+    });
   });
 
   //validate and check headings for the markdown files
-  readDirs(pathStart,exemptPaths,function(err,files){
-    if (err){
-      core.setFailed(err);
-    }
-    for(const file of files){
-      if (file.endsWith(".md")){
-        checkMDFile(file);
-      } 
-    }
+  const result = await core.group('Check Markdown Formatting', async () => {
+    readDirs(pathStart,exemptPaths,function(err,files){
+      if (err){
+        core.setFailed(err);
+      }
+      for(const file of files){
+        if (file.endsWith(".md")){
+          checkMDFile(file);
+        } 
+      }
+    });
   });
-} 
+}
 
 catch (error) {
     console.error(error);
