@@ -323,7 +323,12 @@ function checkMDFile(file){
         inComment= !inComment;
       }
     }
-    if (!warned){(file)
+    if (!warned){
+      core.info("\u001b[38;5;10m Checks passed: "+file);
+    }
+  });
+}
+function checkContributors(file){
     //schema=JSON.parse(fs.readFileSync('contributorSchema.json' ,{encoding:'utf8', flag:'r'}));
     schema=ContributorSchema;
     instance=JSON.parse(fs.readFileSync(file ,{encoding:'utf8', flag:'r'}));
@@ -337,8 +342,6 @@ function checkMDFile(file){
       console.log(JsonError.message);
       }
     }
-  }
-  });
 }
 function getQuizTopics(topics){
   var topicName=[]
