@@ -1,0 +1,32 @@
+{
+   "id":"/QuestionStructure",
+   "type":"object",
+   "properties":{
+       "question":{"type":["string",
+                {"type":"array",
+                    "items":{"type":"string"}
+                }
+            ]},
+       "questionImg":{"type":"string"},
+       "answerImg":{"type":"string"},
+       "answer":{"type":["string",
+                {"type":"array",
+                "items":{"type":"string"}
+                }
+            ]},
+       "marks":{"type":"integer"},
+       "topics":{
+           "type":"array",
+           "items":{"type":"string"}
+       },
+       "author":{
+        "type":"array",
+        "items":{"type":"string"}
+        },
+        "contributors":{
+            "type":"array",
+            "items":{"type":"string"}
+        }
+   }, 
+   "required":["question","answer","marks","topics"]
+}

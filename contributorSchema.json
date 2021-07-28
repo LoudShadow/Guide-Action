@@ -1,0 +1,24 @@
+{"type": "array",
+    "items":{
+      "type":"object",
+      "properties":{
+          "name":{"type":"string"},
+          "image":{"type":"string"},
+          "github":{"type":"string"},
+          "discord":{"type":"string"},
+          "nick":{"type":"string"}
+        },
+        "required":["name","image"],
+        "additionalProperties":{
+          "type":["string",
+            {
+              "type":"object",
+              "properties":{
+                "value":{"type":"string"},
+                "link":{"type":"string"}
+              } 
+            }
+          ]
+        }
+    }  
+}

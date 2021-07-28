@@ -1,0 +1,12 @@
+{
+    "id":"/CourseStructure",
+    "type":"Object",
+    "properties":{
+        "name":{"type":"string"},
+        "subTopics":{
+            "type":"array",
+            "items":{"$ref":"/CourseStructure"}
+        }
+    },
+    "required":["name"]
+}
