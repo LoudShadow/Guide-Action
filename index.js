@@ -9,9 +9,6 @@ var Validator = require('jsonschema').Validator;
 
 //Setup Variables
 
-//const exemptPathFromHome=["node_modules"];
-//const pathStart='/home/joseph/Documents/Code/Guide-Action'
-//const pathStart="/home/joseph/Documents/Code/dcs-notes.github.io";
 const pathStart=process.env.GITHUB_WORKSPACE;
 const exemptPathFromHome=[".jekyll-cache","_site",".github"];
 const contributorPath='contributors/contributors.json'
@@ -245,6 +242,7 @@ function readDirs(dir,exempt,result){
     for (var file of files){
       var filePath=path.resolve(dir,file);
 
+
       var funcCall=(filePath)=>{
         fs.stat(filePath, (err,stat) => {
           if (err){result(err);}
@@ -274,15 +272,8 @@ function readDirs(dir,exempt,result){
 } 
 
 function getHeadingSize(line){
-  var count=0;//const exemptPathFromHome=["node_modules"];
-  //const pathStart='/home/joseph/Documents/Code/Guide-Action'
-  //const pathStart="/home/joseph/Documents/Code/dcs-notes.github.io";
-  const pathStart=process.env.GITHUB_WORKSPACE;
-  const exemptPathFromHome=[".jekyll-cache","_site",".github"];
-  const contributorPath='contributors/contributors.json'
-  const QuizPath='quiz/questions'
-  const DataPath='_data'
-  
+  //counts the number of hashes until any other character
+  var count=0;
   for (var letter of line){
     if (letter=='#'){
       count+=1;
@@ -293,6 +284,8 @@ function getHeadingSize(line){
   }
   return count;
 }
+
+//check if the line is the start or end of code and should be excluded
 function multiLineCode(line){
   var count=0;
   for (var letter of line){
@@ -309,12 +302,14 @@ function multiLineCode(line){
   return false;
 }
 
+//checks the MDFiles for heading size
 function checkMDFile(file){
   fs.readFile(file,'utf8',(err,data)=>{
     if (err){
       console.error(err);
       return;
     }
+    //check if part is true in the font matter
     var fontMatter=fm(data);
     var hasPart=false;
     if (fontMatter.attributes.part){
@@ -324,27 +319,34 @@ function checkMDFile(file){
 
 
     lineCount=0;
+    //start with a large value
     headingValue=10
     var lines = data.split('\n');
+    //flags 
     var warned = false;
     var inComment=false;
     for (const line of lines){
       lineCount+=1;
+      //only check a line if there is a comment
       if (!inComment){
         var currentHeadingSize = getHeadingSize(line);
+        // h1 is not permitted with part 
         if (hasPart && currentHeadingSize==1){
           core.warning("Warning files with part:true should not have Heading 1 on line "+lineCount+" of "+ file + " Start a page on `h2` or `##` ");
           warned=true;
         }
+        // A jump up of more than 1 is not permitted
         if (currentHeadingSize>headingValue+1){
           core.warning("Warning incorrect heading indentation on line "+lineCount+" of "+ file + " went from a h"+headingValue+" to h"+currentHeadingSize);
           headingValue=currentHeadingSize;
           warned=true;
         }
+        //any other valid heading size update the headingValue
         else if (currentHeadingSize!=0){
           headingValue=currentHeadingSize;
         }
       }
+      //toggle in and out of a multi line comment
       if (multiLineCode(line)){
         inComment= !inComment;
       }
@@ -354,31 +356,43 @@ function checkMDFile(file){
     }
   });
 }
+
+//Check the json contributors is valid
 function checkContributors(file){
     //schema=JSON.parse(fs.readFileSync('contributorSchema.json' ,{encoding:'utf8', flag:'r'}));
     schema=ContributorSchema;
+    //parse the json file
     instance=JSON.parse(fs.readFileSync(file ,{encoding:'utf8', flag:'r'}));
+    //run the validator
     var validation=validate(instance,schema);
+    //if valid
     if (validation.valid){
+      // show a valid message
       core.info("\u001b[38;5;10m Checks passed contributors JSON")
       return instance;
     }else{
+      //display the error
       for( const JsonError of validation.errors){
       console.log(JsonError.property);
       console.log(JsonError.message);
       }
     }
 }
+
+//gets the quiz topics from the structure in teh quiz files
 function getQuizTopics(topics){
   var topicName=[]
   for (const topic of topics) {
     topicName.push(topic.name);
+    //checks for sub topics and adds them too
     if (topic.subTopics){
       topicName=topicName.concat(getQuizTopics(topic.subTopics));
     }
   }
   return topicName;
 }
+
+//for recall and understanding check that each of them have contributors that are defined in contributors.json
 function checkValidContributors(checking,contributors,file,description){
   var error=false;
   if (checking){
@@ -442,7 +456,7 @@ function checkQuizFile(file,contributors){
         }
       }
     }
-
+    //check the contributors are defined
     error = error || checkValidContributors(instance.recall,contributors,file,"recall");
     error = error || checkValidContributors(instance.understanding,contributors,file,"understanding");
 
@@ -508,6 +522,7 @@ try {
   //validate and check contributors
   var contributorNames=[]
   var contributors= checkContributors(path.resolve(pathStart,contributorPath));
+  //Check of duplicates
   for (const con of contributors){
     if (contributorNames.includes(con.name)){
       core.setFailed("ERROR duplicate contributor name '"+con.name+"' Use a unique name, nick can be used to change display name");
