@@ -7,6 +7,20 @@ const yaml = require('js-yaml');
 const validate = require('jsonschema').validate;
 var Validator = require('jsonschema').Validator;
 
+//Setup Variables
+
+//const exemptPathFromHome=["node_modules"];
+//const pathStart='/home/joseph/Documents/Code/Guide-Action'
+//const pathStart="/home/joseph/Documents/Code/dcs-notes.github.io";
+const pathStart=process.env.GITHUB_WORKSPACE;
+const exemptPathFromHome=[".jekyll-cache","_site",".github"];
+const contributorPath='contributors/contributors.json'
+const QuizPath='quiz/questions'
+const DataPath='_data'
+
+
+
+//Schemas for the JSON ans YML files
 
 var ContributorSchema={"type": "array",
 "items":{
@@ -216,17 +230,20 @@ var structureSchema={
 }
 
 
+
+//Recursively read directories and return all files
+// dir - directory to be searched
+// except - path of any exempt directories
+// result - function to call result(err,files) with a result 
 function readDirs(dir,exempt,result){ 
   var results=[];
+  //using fs.readdir
   fs.readdir(dir, function(err,files){
-    if (err){
-      result(err);
-    }
+    if (err){result(err);}
     var count=files.length;
     if (!count){result(null,results);}
     for (var file of files){
       var filePath=path.resolve(dir,file);
-
 
       var funcCall=(filePath)=>{
         fs.stat(filePath, (err,stat) => {
@@ -257,7 +274,15 @@ function readDirs(dir,exempt,result){
 } 
 
 function getHeadingSize(line){
-  var count=0;
+  var count=0;//const exemptPathFromHome=["node_modules"];
+  //const pathStart='/home/joseph/Documents/Code/Guide-Action'
+  //const pathStart="/home/joseph/Documents/Code/dcs-notes.github.io";
+  const pathStart=process.env.GITHUB_WORKSPACE;
+  const exemptPathFromHome=[".jekyll-cache","_site",".github"];
+  const contributorPath='contributors/contributors.json'
+  const QuizPath='quiz/questions'
+  const DataPath='_data'
+  
   for (var letter of line){
     if (letter=='#'){
       count+=1;
@@ -469,16 +494,6 @@ function checkDataFile(file,contributors){
     }
   }
 }
-
-//const exemptPathFromHome=["node_modules"];
-//const pathStart='/home/joseph/Documents/Code/Guide-Action'
-//const pathStart="/home/joseph/Documents/Code/dcs-notes.github.io";
-const pathStart=process.env.GITHUB_WORKSPACE;
-const exemptPathFromHome=[".jekyll-cache","_site",".github"];
-const contributorPath='contributors/contributors.json'
-const QuizPath='quiz/questions'
-const DataPath='_data'
-
 
 var exemptPaths=[];
 for (const exPath of exemptPathFromHome) {
