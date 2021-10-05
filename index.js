@@ -458,7 +458,12 @@ function checkValidContributors(checking,contributors,file,description){
 // }
 function checkDataFile(file,contributors){
   //var dataSchema=JSON.parse(fs.readFileSync('dataSchema.json' ,{encoding:'utf8', flag:'r'}));
-  var instance=yaml.load(fs.readFileSync(file ,{encoding:'utf8', flag:'r'}));
+  try{
+    var instance=yaml.load(fs.readFileSync(file ,{encoding:'utf8', flag:'r'}));
+  }catch(error){
+    console.error("error in file: "+file +":"+ error)
+  }
+  
   var v = new Validator();
   var validation=v.validate(instance, dataSchema);
   var error =false
