@@ -380,17 +380,17 @@ function checkContributors(file){
 }
 
 //gets the quiz topics from the structure in teh quiz files
-function getQuizTopics(topics){
-  var topicName=[]
-  for (const topic of topics) {
-    topicName.push(topic.name);
-    //checks for sub topics and adds them too
-    if (topic.subTopics){
-      topicName=topicName.concat(getQuizTopics(topic.subTopics));
-    }
-  }
-  return topicName;
-}
+// function getQuizTopics(topics){
+//   var topicName=[]
+//   for (const topic of topics) {
+//     topicName.push(topic.name);
+//     //checks for sub topics and adds them too
+//     if (topic.subTopics){
+//       topicName=topicName.concat(getQuizTopics(topic.subTopics));
+//     }
+//   }
+//   return topicName;
+// }
 
 //for recall and understanding check that each of them have contributors that are defined in contributors.json
 function checkValidContributors(checking,contributors,file,description){
@@ -418,60 +418,60 @@ function checkValidContributors(checking,contributors,file,description){
   return error;
 }
 
-function checkQuizFile(file,contributors){
-  //quizSchema=JSON.parse(fs.readFileSync('quizSchema.json' ,{encoding:'utf8', flag:'r'}));
-  //questionSchema=JSON.parse(fs.readFileSync('questionSchema.json' ,{encoding:'utf8', flag:'r'}));
-  //structureSchema=JSON.parse(fs.readFileSync('structureSchema.json' ,{encoding:'utf8', flag:'r'}));
-  instance=JSON.parse(fs.readFileSync(file ,{encoding:'utf8', flag:'r'}));
-  var v = new Validator();
-  v.addSchema(questionSchema, '/QuestionStructure');
-  v.addSchema(structureSchema, '/CourseStructure');
-  validation=v.validate(instance, quizSchema);
-  if (validation.valid){
+// function checkQuizFile(file,contributors){
+//   //quizSchema=JSON.parse(fs.readFileSync('quizSchema.json' ,{encoding:'utf8', flag:'r'}));
+//   //questionSchema=JSON.parse(fs.readFileSync('questionSchema.json' ,{encoding:'utf8', flag:'r'}));
+//   //structureSchema=JSON.parse(fs.readFileSync('structureSchema.json' ,{encoding:'utf8', flag:'r'}));
+//   instance=JSON.parse(fs.readFileSync(file ,{encoding:'utf8', flag:'r'}));
+//   var v = new Validator();
+//   v.addSchema(questionSchema, '/QuestionStructure');
+//   v.addSchema(structureSchema, '/CourseStructure');
+//   validation=v.validate(instance, quizSchema);
+//   if (validation.valid){
 
-    //check for topics
-    var error=false;
-    var topics=getQuizTopics(instance.structure);
-    for (let index = 0; index < instance.extSites.length; index++) {
-      for (const siteTopic of instance.extSites[index].topics) {
-        if (!topics.includes(siteTopic)){
-          core.error("Error in quiz JSON"+file+" in extSites["+index+"] '"+siteTopic+"' is not defined in structure");
-          error=true;
-        }
-      }
-    }
-    for (let index = 0; index < instance.recall.length; index++) {
-      for (const questionTopic of instance.recall[index].topics) {
-        if (!topics.includes(questionTopic)){
-          core.error("Error in quiz JSON"+file+" in recall["+index+"] '"+questionTopic+"' is not defined in structure");
-          error=true;
-        }
-      }
-    }
-    for (let index = 0; index < instance.understanding.length; index++) {
-      for (const questionTopic of instance.extSites[index].topics) {
-        if (!topics.includes(questionTopic)){
-          core.error("Error in quiz JSON"+file+" in understanding["+index+"] '"+questionTopic+"' is not defined in structure");
-          error=true;
-        }
-      }
-    }
-    //check the contributors are defined
-    error = error || checkValidContributors(instance.recall,contributors,file,"recall");
-    error = error || checkValidContributors(instance.understanding,contributors,file,"understanding");
+//     //check for topics
+//     var error=false;
+//     var topics=getQuizTopics(instance.structure);
+//     for (let index = 0; index < instance.extSites.length; index++) {
+//       for (const siteTopic of instance.extSites[index].topics) {
+//         if (!topics.includes(siteTopic)){
+//           core.error("Error in quiz JSON"+file+" in extSites["+index+"] '"+siteTopic+"' is not defined in structure");
+//           error=true;
+//         }
+//       }
+//     }
+//     for (let index = 0; index < instance.recall.length; index++) {
+//       for (const questionTopic of instance.recall[index].topics) {
+//         if (!topics.includes(questionTopic)){
+//           core.error("Error in quiz JSON"+file+" in recall["+index+"] '"+questionTopic+"' is not defined in structure");
+//           error=true;
+//         }
+//       }
+//     }
+//     for (let index = 0; index < instance.understanding.length; index++) {
+//       for (const questionTopic of instance.extSites[index].topics) {
+//         if (!topics.includes(questionTopic)){
+//           core.error("Error in quiz JSON"+file+" in understanding["+index+"] '"+questionTopic+"' is not defined in structure");
+//           error=true;
+//         }
+//       }
+//     }
+//     //check the contributors are defined
+//     error = error || checkValidContributors(instance.recall,contributors,file,"recall");
+//     error = error || checkValidContributors(instance.understanding,contributors,file,"understanding");
 
-    if (!error){
-      core.info("\u001b[38;5;10m Checks passed quiz JSON "+file);
-    }
-    return instance;
-  }else{
-    core.error("Error(s) in quiz JSON "+file);
-    for( const JsonError of validation.errors){
-    console.log(JsonError.property);
-    console.log(JsonError.message);
-    }
-  }
-}
+//     if (!error){
+//       core.info("\u001b[38;5;10m Checks passed quiz JSON "+file);
+//     }
+//     return instance;
+//   }else{
+//     core.error("Error(s) in quiz JSON "+file);
+//     for( const JsonError of validation.errors){
+//     console.log(JsonError.property);
+//     console.log(JsonError.message);
+//     }
+//   }
+// }
 function checkDataFile(file,contributors){
   //var dataSchema=JSON.parse(fs.readFileSync('dataSchema.json' ,{encoding:'utf8', flag:'r'}));
   var instance=yaml.load(fs.readFileSync(file ,{encoding:'utf8', flag:'r'}));
@@ -534,16 +534,16 @@ try {
 
   //validate and check quiz
 
-  readDirs(path.resolve(pathStart,QuizPath),[],function(err,files){
-    if (err){
-      core.setFailed(err);
-    }
-    for(const file of files){
-      if (file.endsWith(".json")){
-        checkQuizFile(file,contributorNames);
-      } 
-    }
-  });
+  // readDirs(path.resolve(pathStart,QuizPath),[],function(err,files){
+  //   if (err){
+  //     core.setFailed(err);
+  //   }
+  //   for(const file of files){
+  //     if (file.endsWith(".json")){
+  //       checkQuizFile(file,contributorNames);
+  //     } 
+  //   }
+  // });
 
   //validate and check data files
   readDirs(path.resolve(pathStart,DataPath),[],function(err,files){
