@@ -11,7 +11,6 @@ A list of current checks
 - The YML files match the schema
 - The Contributors in the quiz and data files are correctly defined
 - There are no duplicate contributors
-- The question topics in quiz are well defined
 - The order in data files ends with .html not .md
-- md files that have part do not hva h1 headings
+- md files that have part do not have h1 headings
 - md files do not have out of order headings h2->h4
