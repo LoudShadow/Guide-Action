@@ -6,6 +6,7 @@ const fm = require('front-matter');
 const yaml = require('js-yaml');
 const validate = require('jsonschema').validate;
 var Validator = require('jsonschema').Validator;
+const { execPath } = require('process');
 
 //Setup Variables
 
@@ -294,7 +295,12 @@ function checkMDFile(file){
       return;
     }
     //check if part is true in the font matter
-    var fontMatter=fm(data);
+    try{
+      var fontMatter=fm(data);
+    }catch(error){
+      console.error("error in file:"+file+" ; "+error);
+    }
+    
     var hasPart=false;
     if (fontMatter.attributes.part){
       hasPart=true;
