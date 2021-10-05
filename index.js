@@ -120,7 +120,7 @@ var dataSchema={
           }
       }
   },
-  "required":["code","description","website","cats","optional"]
+  "required":["code","description"]
 }
 
 var questionSchema={

@@ -74,5 +74,5 @@
             }
         }
     },
-    "required":["code","description","website","cats","optional"]
+    "required":["code","description"]
 }
