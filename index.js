@@ -479,16 +479,19 @@ function checkDataFile(file,contributors){
     if (instance.Questions){
       error = error || checkValidContributors(instance.Questions.altQuestions,contributors,file,"Questions");
     }process.env.GITHUB_WORKSPACE
-    for (let index = 0; index < instance.Notes.length; index++) {
-      if (instance.Notes[index].order){
-        for (const part of instance.Notes[index].order) {
-          if (!part.endsWith(".html")){
-            core.error("Error in file:"+file+" in Notes["+index+"] '"+part+"' should end with .html ");
-            error=true;
+    if (instance.Notes){
+      for (let index = 0; index < instance.Notes.length; index++) {
+        if (instance.Notes[index].order){
+          for (const part of instance.Notes[index].order) {
+            if (!part.endsWith(".html")){
+              core.error("Error in file:"+file+" in Notes["+index+"] '"+part+"' should end with .html ");
+              error=true;
+            }
           }
         }
       }
     }
+
 
 
     if (!error){
